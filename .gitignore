@@ -66,6 +66,9 @@ yarn-error.log
 # testing
 /coverage
 
+# Railway API URL override (local dev)
+src/config/api.config.local.js
+
 # Yarn
 .yarn/*
 !.yarn/patches

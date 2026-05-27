@@ -1,18 +1,35 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { ROUTES } from '../utils';
-
-import Home from '../screens/HomeScreen';
-import Profile from '../screens/ProfileScreen';
+import { COLORS, ROUTES } from '../utils';
+import TabNav from './TabNav';
+import ProductDetailScreen from '../screens/ProductDetailScreen';
+import CustomRequestDetailScreen from '../screens/CustomRequestDetailScreen';
 
 const Stack = createStackNavigator();
 
-const MainNavigation = () => {
-  return (
-    <Stack.Navigator initialRouteName={ROUTES.HOME}>
-      <Stack.Screen name={ROUTES.HOME} component={Home} />
-      <Stack.Screen name={ROUTES.PROFILE} component={Profile} />
-    </Stack.Navigator>
-  );
-};
+const MainNav = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: { backgroundColor: COLORS.secondary },
+      headerTintColor: COLORS.textDark,
+      headerTitleStyle: { fontWeight: '800' },
+    }}
+  >
+    <Stack.Screen
+      name={ROUTES.TABS}
+      component={TabNav}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name={ROUTES.PRODUCT_DETAIL}
+      component={ProductDetailScreen}
+      options={{ title: 'Product' }}
+    />
+    <Stack.Screen
+      name={ROUTES.CUSTOM_REQUEST_DETAIL}
+      component={CustomRequestDetailScreen}
+      options={{ title: 'Request Progress' }}
+    />
+  </Stack.Navigator>
+);
 
-export default MainNavigation;
+export default MainNav;

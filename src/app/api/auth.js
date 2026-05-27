@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../../utils/api';
 
-const BASE_URL = 'http://127.0.0.1:8000/api';
+const BASE_URL = API_BASE_URL;
 
 const options = {
   headers: {
@@ -9,15 +10,15 @@ const options = {
   },
 };
 
-export async function authLogin({ email, password }) {
-  console.log('[authLogin] POST', BASE_URL + '/login', { email });
+export async function authLogin({ username, password }) {
+  console.log('[authLogin] POST', BASE_URL + '/login', { username });
   let response;
 
   try {
     response = await fetch(BASE_URL + '/login', {
       method: 'POST',
       ...options,
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     });
   } catch (error) {
     console.error('[authLogin] backend connection FAILED', {

@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { authLogin } from '../api/auth';
+import { fetchMe } from '../api/user';
 import {
   userLoginCompleted,
   userLoginError,
@@ -10,21 +11,26 @@ import {
 function* loginSaga(action) {
   try {
     console.log('[loginSaga] USER_LOGIN received', {
-      hasEmail: Boolean(action?.payload?.email),
+      hasUsername: Boolean(action?.payload?.username),
       hasPassword: Boolean(action?.payload?.password),
     });
     yield put(userLoginRequest());
 
     const data = yield call(authLogin, action.payload);
-    console.log('[loginSaga] authLogin returned', {
-      hasToken: Boolean(data?.token),
-      hasUser: Boolean(data?.user),
-    });
+    let user = data?.user ?? null;
+    if (data?.token) {
+      try {
+        const me = yield call(fetchMe);
+        user = me?.data ?? user;
+      } catch {
+        // profile loads on Profile tab if /me fails here
+      }
+    }
 
     yield put(
       userLoginCompleted({
         token: data?.token ?? null,
-        user: data?.user ?? null,
+        user,
       }),
     );
   } catch (error) {
