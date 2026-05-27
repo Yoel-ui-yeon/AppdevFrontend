@@ -16,7 +16,9 @@ export async function apiRequest(path, { method = 'GET', body, auth = false } = 
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch (error) {
-    throw new Error('Cannot connect to backend server');
+    throw new Error(
+      `Cannot connect to backend server (${API_BASE_URL}). Check Wi‑Fi, VPN, and api.config — on a physical phone use your Mac’s LAN IP for local dev (not 10.0.2.2).`,
+    );
   }
 
   let data;
@@ -27,7 +29,14 @@ export async function apiRequest(path, { method = 'GET', body, auth = false } = 
   }
 
   if (!response.ok) {
-    throw new Error(data?.error?.message || data?.message || 'Request failed');
+    const msg =
+      data?.error?.message ||
+      data?.message ||
+      data?.detail ||
+      data?.title ||
+      (typeof data === 'string' ? data : null) ||
+      'Request failed';
+    throw new Error(String(msg));
   }
 
   return data;

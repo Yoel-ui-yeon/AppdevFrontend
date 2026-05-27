@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { API_BASE_URL } from '../../utils/api';
+import apiConfig from '../../config/api.config';
 
 const BASE_URL = API_BASE_URL;
 
@@ -9,6 +11,20 @@ const options = {
     'Content-Type': 'application/json',
   },
 };
+
+let googleConfigured = false;
+
+function ensureGoogleConfigured() {
+  if (googleConfigured) {
+    return;
+  }
+
+  GoogleSignin.configure({
+    webClientId: apiConfig.GOOGLE_WEB_CLIENT_ID || undefined,
+    offlineAccess: false,
+  });
+  googleConfigured = true;
+}
 
 export async function authLogin({ username, password }) {
   console.log('[authLogin] POST', BASE_URL + '/login', { username });
@@ -25,7 +41,9 @@ export async function authLogin({ username, password }) {
       url: BASE_URL + '/login',
       message: error?.message,
     });
-    throw new Error('Cannot connect to backend server');
+    throw new Error(
+      `Cannot connect to backend server (${BASE_URL}). Check Wi‑Fi, VPN, and api.config — use Railway or your Mac’s LAN IP on a real phone (not 10.0.2.2).`,
+    );
   }
 
   let data;
@@ -58,12 +76,65 @@ export async function authLogin({ username, password }) {
     return data;
   } else {
     console.error('[authLogin] login failed body', data);
-    throw new Error(data.message || 'Login failed');
+    const msg =
+      data?.message ||
+      data?.error ||
+      data?.detail ||
+      data?.title ||
+      (typeof data === 'string' ? data : null) ||
+      'Login failed';
+    throw new Error(String(msg));
   }
 }
 
 export async function authLogout() {
   await AsyncStorage.removeItem('jwt_token');
+}
+
+export async function authGoogleLogin() {
+  ensureGoogleConfigured();
+
+  if (!apiConfig.GOOGLE_WEB_CLIENT_ID) {
+    throw new Error('Google login is not configured. Set GOOGLE_WEB_CLIENT_ID in api.config.local.js.');
+  }
+
+  try {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const userInfo = await GoogleSignin.signIn();
+    const idToken = userInfo?.data?.idToken || userInfo?.idToken;
+
+    if (!idToken) {
+      throw new Error('Google did not return an ID token.');
+    }
+
+    const response = await fetch(BASE_URL + '/v1/login/google', {
+      method: 'POST',
+      ...options,
+      body: JSON.stringify({ idToken }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.error?.message || data?.message || 'Google login failed');
+    }
+
+    if (data?.token) {
+      await AsyncStorage.setItem('jwt_token', data.token);
+    }
+
+    return data;
+  } catch (error) {
+    if (error?.code === statusCodes.SIGN_IN_CANCELLED) {
+      throw new Error('Google sign-in was cancelled.');
+    }
+    if (error?.code === statusCodes.IN_PROGRESS) {
+      throw new Error('Google sign-in already in progress.');
+    }
+    if (error?.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      throw new Error('Google Play Services not available.');
+    }
+    throw error;
+  }
 }
 
 export async function getAuthHeaders() {

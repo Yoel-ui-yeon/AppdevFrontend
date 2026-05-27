@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "350685343805",
+    "project_id": "cloudrobe-bd8af",
+    "storage_bucket": "cloudrobe-bd8af.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350685343805:android:7bcf9baf562eb30c5cba54",
+        "android_client_info": {
+          "package_name": "com.cloudrobe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjy-sUW5ju4gXE9ZppoE59j5o4w_kR_jU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

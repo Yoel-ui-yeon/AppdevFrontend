@@ -34,6 +34,10 @@ const Login = () => {
     dispatch(userLogin({ username: username.trim(), password }));
   };
 
+  const handleGoogleLogin = () => {
+    dispatch(userLogin({ provider: 'google' }));
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.root}
@@ -85,6 +89,12 @@ const Login = () => {
               containerStyle={styles.btnWrap}
               textStyle={styles.btnText}
               onPress={handleLogin}
+            />
+            <CustomButton
+              label={isLoading ? 'Please wait...' : 'Continue with Google'}
+              containerStyle={styles.googleBtnWrap}
+              textStyle={styles.googleBtnText}
+              onPress={handleGoogleLogin}
             />
 
             <View style={styles.footer}>
@@ -174,6 +184,15 @@ const styles = StyleSheet.create({
     marginTop: SPACING.sm,
   },
   btnText: { color: COLORS.textLight, textAlign: 'center', fontWeight: '800', fontSize: 17 },
+  googleBtnWrap: {
+    width: '100%',
+    backgroundColor: COLORS.card,
+    borderRadius: 24,
+    marginTop: SPACING.sm,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  googleBtnText: { color: COLORS.textDark, textAlign: 'center', fontWeight: '700', fontSize: 16 },
   footer: { flexDirection: 'row', justifyContent: 'center', marginTop: SPACING.lg, gap: 6, flexWrap: 'wrap' },
   footerText: { color: COLORS.textDark },
   link: { color: COLORS.link, fontWeight: '700' },

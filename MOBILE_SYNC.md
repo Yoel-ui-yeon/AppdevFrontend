@@ -1,16 +1,16 @@
 # Mobile app ↔ Railway backend sync
 
-The AppDev app runs on your PC/emulator but talks to the **deployed** Cloudrobe API on Railway. Admin/staff use the **web dashboard** on the same Railway app and database.
+The **Cloudrobe** mobile app runs on your PC/emulator but talks to the **deployed** Cloudrobe API on Railway. Admin/staff use the **web dashboard** on the same Railway app and database.
 
 ## One-time setup
 
 1. Railway → **finals-webdev** → **Settings** → **Networking** → copy your public URL  
    Example: `https://finals-webdev-production.up.railway.app`
 
-2. In AppDev:
+2. In the frontend app:
 
 ```powershell
-cd AppDev\src\config
+cd AppdevFrontend\src\config
 copy api.config.local.example.js api.config.local.js
 ```
 
@@ -27,7 +27,7 @@ module.exports = {
 4. Restart Metro and rebuild the app:
 
 ```powershell
-cd AppDev
+cd AppdevFrontend
 npm start
 # new terminal:
 npm run android
@@ -51,7 +51,7 @@ Pull down on a screen to refresh immediately.
 In `api.config.local.js` set `USE_RAILWAY_BACKEND: false` and run:
 
 ```powershell
-cd cloudrobe
+cd AppdevBackend
 php -S 127.0.0.1:8000 -t public
 ```
 

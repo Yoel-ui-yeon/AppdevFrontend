@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "APPDEVSectionB.app"
-               BlueprintName = "APPDEVSectionB"
-               ReferencedContainer = "container:APPDEVSectionB.xcodeproj">
+               BuildableName = "Cloudrobe.app"
+               BlueprintName = "Cloudrobe"
+               ReferencedContainer = "container:Cloudrobe.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "APPDEVSectionBTests.xctest"
-               BlueprintName = "APPDEVSectionBTests"
-               ReferencedContainer = "container:APPDEVSectionB.xcodeproj">
+               BuildableName = "CloudrobeTests.xctest"
+               BlueprintName = "CloudrobeTests"
+               ReferencedContainer = "container:Cloudrobe.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "APPDEVSectionB.app"
-            BlueprintName = "APPDEVSectionB"
-            ReferencedContainer = "container:APPDEVSectionB.xcodeproj">
+            BuildableName = "Cloudrobe.app"
+            BlueprintName = "Cloudrobe"
+            ReferencedContainer = "container:Cloudrobe.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "APPDEVSectionB.app"
-            BlueprintName = "APPDEVSectionB"
-            ReferencedContainer = "container:APPDEVSectionB.xcodeproj">
+            BuildableName = "Cloudrobe.app"
+            BlueprintName = "Cloudrobe"
+            ReferencedContainer = "container:Cloudrobe.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

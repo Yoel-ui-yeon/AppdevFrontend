@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { authLogin } from '../api/auth';
+import { authGoogleLogin, authLogin } from '../api/auth';
 import { fetchMe } from '../api/user';
 import {
   userLoginCompleted,
@@ -10,13 +10,17 @@ import {
 
 function* loginSaga(action) {
   try {
+    const isGoogle = action?.payload?.provider === 'google';
     console.log('[loginSaga] USER_LOGIN received', {
+      provider: isGoogle ? 'google' : 'password',
       hasUsername: Boolean(action?.payload?.username),
       hasPassword: Boolean(action?.payload?.password),
     });
     yield put(userLoginRequest());
 
-    const data = yield call(authLogin, action.payload);
+    const data = isGoogle
+      ? yield call(authGoogleLogin)
+      : yield call(authLogin, action.payload);
     let user = data?.user ?? null;
     if (data?.token) {
       try {
