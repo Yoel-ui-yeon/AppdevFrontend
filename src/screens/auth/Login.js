@@ -16,6 +16,7 @@ import CustomButton from '../../components/CustomButton';
 import CustomTextInput from '../../components/CustomTextInput';
 import useResponsive from '../../hooks/useResponsive';
 import { userLogin } from '../../app/actions';
+import { isGoogleLoginAvailable } from '../../app/api/auth';
 import { COLORS, IMG, ROUTES, SPACING } from '../../utils';
 
 const Login = () => {
@@ -25,6 +26,7 @@ const Login = () => {
   const { isLoading, error } = useSelector(s => s.auth);
   const navigation = useNavigation();
   const { isWide, formMaxWidth, contentMaxWidth } = useResponsive();
+  const canUseGoogleLogin = isGoogleLoginAvailable();
 
   const handleLogin = () => {
     if (!username.trim() || !password) {
@@ -90,12 +92,14 @@ const Login = () => {
               textStyle={styles.btnText}
               onPress={handleLogin}
             />
-            <CustomButton
-              label={isLoading ? 'Please wait...' : 'Continue with Google'}
-              containerStyle={styles.googleBtnWrap}
-              textStyle={styles.googleBtnText}
-              onPress={handleGoogleLogin}
-            />
+            {canUseGoogleLogin ? (
+              <CustomButton
+                label={isLoading ? 'Please wait...' : 'Continue with Google'}
+                containerStyle={styles.googleBtnWrap}
+                textStyle={styles.googleBtnText}
+                onPress={handleGoogleLogin}
+              />
+            ) : null}
 
             <View style={styles.footer}>
               <Text style={styles.footerText}>New to Cloudrobe?</Text>

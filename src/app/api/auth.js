@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { API_BASE_URL } from '../../utils/api';
 import apiConfig from '../../config/api.config';
 
@@ -13,17 +12,41 @@ const options = {
 };
 
 let googleConfigured = false;
+let googleModule = null;
+
+function loadGoogleModule() {
+  if (googleModule) {
+    return googleModule;
+  }
+  try {
+    // Load lazily so app startup stays stable even if native module is unavailable.
+    // eslint-disable-next-line global-require
+    googleModule = require('@react-native-google-signin/google-signin');
+    return googleModule;
+  } catch {
+    return null;
+  }
+}
 
 function ensureGoogleConfigured() {
+  const module = loadGoogleModule();
+  if (!module?.GoogleSignin) {
+    return false;
+  }
   if (googleConfigured) {
-    return;
+    return true;
   }
 
-  GoogleSignin.configure({
+  module.GoogleSignin.configure({
     webClientId: apiConfig.GOOGLE_WEB_CLIENT_ID || undefined,
     offlineAccess: false,
   });
   googleConfigured = true;
+  return true;
+}
+
+export function isGoogleLoginAvailable() {
+  return Boolean(apiConfig.GOOGLE_WEB_CLIENT_ID) && Boolean(loadGoogleModule()?.GoogleSignin);
 }
 
 export async function authLogin({ username, password }) {
@@ -92,15 +115,18 @@ export async function authLogout() {
 }
 
 export async function authGoogleLogin() {
-  ensureGoogleConfigured();
+  const module = loadGoogleModule();
+  const configured = ensureGoogleConfigured();
 
-  if (!apiConfig.GOOGLE_WEB_CLIENT_ID) {
-    throw new Error('Google login is not configured. Set GOOGLE_WEB_CLIENT_ID in api.config.local.js.');
+  if (!configured || !module?.GoogleSignin || !apiConfig.GOOGLE_WEB_CLIENT_ID) {
+    throw new Error(
+      'Google login is not configured. Set GOOGLE_WEB_CLIENT_ID and ensure Google Sign-In native setup is complete.',
+    );
   }
 
   try {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-    const userInfo = await GoogleSignin.signIn();
+    await module.GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const userInfo = await module.GoogleSignin.signIn();
     const idToken = userInfo?.data?.idToken || userInfo?.idToken;
 
     if (!idToken) {
@@ -124,13 +150,13 @@ export async function authGoogleLogin() {
 
     return data;
   } catch (error) {
-    if (error?.code === statusCodes.SIGN_IN_CANCELLED) {
+    if (error?.code === module.statusCodes?.SIGN_IN_CANCELLED) {
       throw new Error('Google sign-in was cancelled.');
     }
-    if (error?.code === statusCodes.IN_PROGRESS) {
+    if (error?.code === module.statusCodes?.IN_PROGRESS) {
       throw new Error('Google sign-in already in progress.');
     }
-    if (error?.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    if (error?.code === module.statusCodes?.PLAY_SERVICES_NOT_AVAILABLE) {
       throw new Error('Google Play Services not available.');
     }
     throw error;

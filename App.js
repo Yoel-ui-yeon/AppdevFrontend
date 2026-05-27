@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigationNi from './src/navigations';
 import configureStore from './src/app/reducers';
 import rootSaga from './src/app/sagas';
+import { setupPushNotifications } from './src/services/pushNotifications';
 import { API_BASE_URL } from './src/utils/api';
 
 const App = () => {
