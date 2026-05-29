@@ -25,9 +25,13 @@ const defaults = {
   /** Refetch lists while a screen is open (admin/staff updates appear automatically) */
   AUTO_REFRESH_MS: 15000,
 
+  /** Native WebSocket URL (same service as admin staff dashboard) */
+  WS_URL: 'wss://websocket-production-c087.up.railway.app/ws',
+
   /**
-   * Firebase Web client ID (OAuth 2.0 client) used by Google Sign-In on mobile.
-   * Put your real value in api.config.local.js before using Google login.
+   * Optional override for the Web OAuth client ID used by Google Sign-In.
+   * If empty, the app uses `googleWebClient.generated.js` (from google-services.json
+   * via `npm run sync-google-web-client` or Android preBuild).
    */
   GOOGLE_WEB_CLIENT_ID: '',
 };

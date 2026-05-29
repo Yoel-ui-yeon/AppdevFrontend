@@ -14,6 +14,7 @@ import EmptyState from '../components/EmptyState';
 import { fetchProducts } from '../app/api/catalog';
 import { cartAdd } from '../app/actions/cart';
 import useAutoRefresh from '../hooks/useAutoRefresh';
+import { subscribeCatalogRealtime } from '../services/catalogRealtime';
 import { COLORS, ROUTES, SPACING } from '../utils';
 
 const HomeScreen = () => {
@@ -37,7 +38,9 @@ const HomeScreen = () => {
     }
   }, []);
 
-  useAutoRefresh(load);
+  useAutoRefresh(load, {
+    realtimeSubscribe: reload => subscribeCatalogRealtime(() => reload(true)),
+  });
 
   return (
     <ScreenLayout

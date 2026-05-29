@@ -14,6 +14,7 @@ import EmptyState from '../components/EmptyState';
 import { fetchCategories, fetchProducts } from '../app/api/catalog';
 import { cartAdd } from '../app/actions/cart';
 import useAutoRefresh from '../hooks/useAutoRefresh';
+import { subscribeCatalogRealtime } from '../services/catalogRealtime';
 import { COLORS, ROUTES, SPACING } from '../utils';
 
 const CollectionsScreen = () => {
@@ -44,7 +45,9 @@ const CollectionsScreen = () => {
     }
   }, []);
 
-  useAutoRefresh(load);
+  useAutoRefresh(load, {
+    realtimeSubscribe: reload => subscribeCatalogRealtime(() => reload(true)),
+  });
 
   const filtered = filterId
     ? products.filter(p => p.category?.id === filterId)
